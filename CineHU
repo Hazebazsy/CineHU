@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineHu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a26;--accent:#e50914;--accent2:#ff6b35;--gold:#f5c518;--green:#22c55e;--text:#f0f0f0;--muted:#888899;--border:rgba(255,255,255,0.07)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+    nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:64px;background:rgba(10,10,15,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .logo{font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-links{display:flex;gap:2rem;list-style:none}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s;cursor:pointer}
+    .nav-links a:hover,.nav-links a.active{color:var(--text)}
+    .nav-right{display:flex;align-items:center;gap:.8rem}
+    .nav-search{display:flex;align-items:center;gap:.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.4rem .8rem}
+    .nav-search input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;width:150px}
+    .nav-search input::placeholder{color:var(--muted)}
+    .admin-btn{padding:.4rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+    .admin-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .admin-btn.on{border-color:var(--green);color:var(--green)}
+    .hero{position:relative;height:500px;display:flex;align-items:flex-end;padding:3rem;overflow:hidden;margin-bottom:2.5rem}
+    .hero-bg{position:absolute;inset:0}
+    .hero-bg img{width:100%;height:100%;object-fit:cover;opacity:.35}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(26,10,46,.9) 0%,rgba(13,27,62,.7) 40%,transparent 100%)}
+    .hero-fade{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,transparent 55%)}
+    .hero-content{position:relative;z-index:2;max-width:560px}
+    .badge{display:inline-block;background:var(--accent);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.22rem .65rem;border-radius:4px;margin-bottom:.8rem}
+    .hero-title{font-family:'Bebas Neue',cursive;font-size:4.5rem;line-height:.95;letter-spacing:2px;margin-bottom:.8rem}
+    .hero-meta{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;font-size:.85rem;color:var(--muted)}
+    .hero-meta .rat{color:var(--gold);font-weight:600}
+    .hero-desc{font-size:.92rem;line-height:1.6;color:rgba(240,240,240,.8);margin-bottom:1.4rem;max-width:460px}
+    .hero-btns{display:flex;gap:.8rem}
+    .btn-p{display:flex;align-items:center;gap:.5rem;background:var(--accent);color:#fff;border:none;padding:.7rem 1.6rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-p:hover{background:#ff1a24;transform:translateY(-1px);box-shadow:0 8px 24px rgba(229,9,20,.4)}
+    .btn-s{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);padding:.7rem 1.6rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s}
+    .btn-s:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+    .hero-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%;position:relative;z-index:2}
+    .hero-empty h2{font-family:'Bebas Neue',cursive;font-size:3rem;letter-spacing:3px;color:var(--muted);margin-bottom:.5rem}
+    .hero-empty p{color:var(--muted);font-size:.9rem}
+    .filter-bar{padding:0 3rem 1.5rem;display:flex;gap:.6rem;flex-wrap:wrap}
+    .chip{padding:.4rem 1rem;border-radius:50px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+    .chip:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+    .chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .section{padding:0 3rem 2.5rem}
+    .sec-hdr{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.2rem}
+    .sec-title{font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:2px}
+    .sec-cnt{font-size:.78rem;color:var(--muted)}
+    .divider{height:1px;background:var(--border);margin:0 3rem 2.5rem}
+    .empty-sec{color:var(--muted);font-size:.85rem;font-style:italic;padding:1rem 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.1rem}
+    .card{background:var(--card);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;border:1px solid var(--border);position:relative}
+    .card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 20px 50px rgba(0,0,0,.6),0 0 0 1px rgba(229,9,20,.25);z-index:2}
+    .card-img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
+    .card-ph{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden}
+    .card-ph::before{content:'';position:absolute;inset:0;background:var(--g,linear-gradient(135deg,#1a0a2e,#0d1b3e))}
+    .card-ph span{position:relative;z-index:1;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+    .card-badge{position:absolute;top:8px;left:8px;color:#fff;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .5rem;border-radius:4px;z-index:3}
+    .b-hot{background:var(--accent2)}.b-new{background:var(--green)}
+    .card-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 50%);opacity:0;transition:opacity .25s;display:flex;align-items:flex-end;padding:.8rem;z-index:2}
+    .card:hover .card-ov{opacity:1}
+    .play-btn{width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:.9rem;margin-left:auto;transition:transform .2s}
+    .card:hover .play-btn{transform:scale(1.1)}
+    .card-info{padding:.8rem}
+    .card-title{font-size:.88rem;font-weight:600;margin-bottom:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-meta{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--muted)}
+    .c-rat{color:var(--gold);font-weight:600}
+    .c-genre{background:rgba(255,255,255,.06);padding:.15rem .45rem;border-radius:4px;font-size:.68rem}
+    .del-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(229,9,20,.85);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.75rem;z-index:10;cursor:pointer;border:none;color:#fff;transition:background .2s}
+    .del-btn:hover{background:var(--accent)}
+    body.admin .del-btn{display:flex}
+    .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px)}
+    .modal-ov.open{opacity:1;pointer-events:all}
+    .modal{background:var(--card);border-radius:16px;width:90%;max-width:540px;overflow:hidden;border:1px solid var(--border);transform:translateY(20px) scale(.97);transition:transform .3s;box-shadow:0 40px 100px rgba(0,0,0,.7)}
+    .modal-ov.open .modal{transform:translateY(0) scale(1)}
+    .m-hdr{height:220px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:1.5rem}
+    .m-hdr-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:5rem}
+    .m-hdr-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+    .m-hdr-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--card) 0%,transparent 60%)}
+    .m-close{position:absolute;top:1rem;right:1rem;width:34px;height:34px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;z-index:2;transition:background .2s;border:none}
+    .m-close:hover{background:rgba(229,9,20,.6)}
+    .m-title-blk{position:relative;z-index:2}
+    .m-title-blk h2{font-family:'Bebas Neue',cursive;font-size:1.9rem;letter-spacing:2px;line-height:1}
+    .m-body{padding:1.4rem}
+    .m-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .m-tag{padding:.22rem .65rem;border-radius:50px;background:rgba(255,255,255,.07);border:1px solid var(--border);font-size:.73rem;color:var(--muted)}
+    .m-desc{font-size:.88rem;line-height:1.65;color:rgba(240,240,240,.75);margin-bottom:1.3rem}
+    .m-actions{display:flex;gap:.8rem}
+    .login-modal{background:var(--card);border-radius:16px;width:90%;max-width:380px;padding:2.5rem;border:1px solid var(--border);transform:translateY(20px) scale(.97);transition:transform .3s;box-shadow:0 40px 100px rgba(0,0,0,.7);text-align:center}
+    .modal-ov.open .login-modal{transform:translateY(0) scale(1)}
+    .login-modal h2{font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;margin-bottom:.4rem}
+    .login-modal p{color:var(--muted);font-size:.85rem;margin-bottom:2rem}
+    .fg{margin-bottom:1rem;text-align:left}
+    .fg label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:.4rem;font-weight:500}
+    .fi{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+    .fi:focus{border-color:var(--accent)}
+    .ferr{color:var(--accent);font-size:.78rem;margin-top:1rem;min-height:1.2em}
+    .up-panel{display:none;position:fixed;bottom:2rem;right:2rem;z-index:300}
+    body.admin .up-panel{display:block}
+    .up-fab{width:56px;height:56px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;box-shadow:0 8px 24px rgba(229,9,20,.5);border:none;color:#fff;transition:all .2s}
+    .up-fab:hover{transform:scale(1.1)}
+    .up-wrap{position:absolute;bottom:70px;right:0;width:360px;background:var(--card);border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.7);transform:scale(.9) translateY(10px);transform-origin:bottom right;opacity:0;pointer-events:none;transition:all .3s}
+    .up-wrap.open{opacity:1;pointer-events:all;transform:scale(1) translateY(0)}
+    .up-hdr{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .up-hdr h3{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:2px}
+    .up-close-btn{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer}
+    .up-body{padding:1.2rem 1.5rem;max-height:60vh;overflow-y:auto}
+    .up-tabs{display:flex;gap:.5rem;margin-bottom:1.2rem}
+    .up-tab{flex:1;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;text-align:center}
+    .up-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .ep{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;padding:.5rem;background:var(--surface);border-radius:8px;margin-bottom:.8rem;max-height:100px;overflow-y:auto}
+    .eo{font-size:1.1rem;text-align:center;padding:.2rem;cursor:pointer;border-radius:4px;transition:background .15s}
+    .eo:hover,.eo.sel{background:rgba(229,9,20,.2)}
+    .up-submit{width:100%;padding:.8rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:.5rem}
+    .up-submit:hover{background:#ff1a24}
+    .up-ok{color:var(--green);font-size:.82rem;text-align:center;margin-top:.7rem;min-height:1.2em}
+    footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:.8rem}
+    .f-logo{font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    @media(max-width:768px){nav{padding:0 1.2rem}.nav-links{display:none}.hero{padding:1.5rem;height:auto;padding-top:80px}.hero-title{font-size:3rem}.section,.filter-bar{padding-left:1.2rem;padding-right:1.2rem}.divider{margin-left:1.2rem;margin-right:1.2rem}footer{flex-direction:column;gap:.5rem;padding:1.5rem 1.2rem}.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}.up-wrap{width:300px}}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="logo">CineHu</div>
+  <ul class="nav-links">
+    <li><a class="active">Főoldal</a></li>
+    <li><a onclick="setFilter('film',null)">Filmek</a></li>
+    <li><a onclick="setFilter('sorozat',null)">Sorozatok</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-search">
+      <svg width="13" height="13" fill="none" stroke="#888899" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Keresés..." id="srch" oninput="renderAll()"/>
+    </div>
+    <button class="admin-btn" id="adminBtn" onclick="adminClick()">🔐 Admin</button>
+  </div>
+</nav>
+
+<div class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div id="heroC"></div>
+</div>
+
+<div class="filter-bar">
+  <div class="chip active" onclick="setFilter('all',this)">Összes</div>
+  <div class="chip" onclick="setFilter('akció',this)">Akció</div>
+  <div class="chip" onclick="setFilter('dráma',this)">Dráma</div>
+  <div class="chip" onclick="setFilter('sci-fi',this)">Sci-Fi</div>
+  <div class="chip" onclick="setFilter('thriller',this)">Thriller</div>
+  <div class="chip" onclick="setFilter('vígjáték',this)">Vígjáték</div>
+  <div class="chip" onclick="setFilter('horror',this)">Horror</div>
+  <div class="chip" onclick="setFilter('animáció',this)">Animáció</div>
+  <div class="chip" onclick="setFilter('film',this)">Filmek</div>
+  <div class="chip" onclick="setFilter('sorozat',this)">Sorozatok</div>
+</div>
+
+<section class="section" id="s-trend"><div class="sec-hdr"><h2 class="sec-title">🔥 Trending</h2><span class="sec-cnt" id="c-trend"></span></div><div class="grid" id="g-trend"></div></section>
+<div class="divider" id="d1"></div>
+<section class="section" id="s-film"><div class="sec-hdr"><h2 class="sec-title">🎬 Filmek</h2><span class="sec-cnt" id="c-film"></span></div><div class="grid" id="g-film"></div></section>
+<div class="divider" id="d2"></div>
+<section class="section" id="s-sor"><div class="sec-hdr"><h2 class="sec-title">📺 Sorozatok</h2><span class="sec-cnt" id="c-sor"></span></div><div class="grid" id="g-sor"></div></section>
+
+<footer><div class="f-logo">CineHu</div><div>© 2024 CineHu – Saját streaming platform</div></footer>
+
+<!-- Detail modal -->
+<div class="modal-ov" id="detMod" onclick="if(event.target.id==='detMod')closeDet()">
+  <div class="modal">
+    <div class="m-hdr"><div class="m-hdr-bg" id="dBg"></div><button class="m-close" onclick="closeDet()">✕</button><div class="m-title-blk"><div class="badge" id="dBadge"></div><h2 id="dTitle"></h2></div></div>
+    <div class="m-body"><div class="m-tags" id="dTags"></div><p class="m-desc" id="dDesc"></p><div class="m-actions"><button class="btn-p">▶ Megtekintés</button><button class="btn-s">+ Listámhoz</button></div></div>
+  </div>
+</div>
+
+<!-- Login modal -->
+<div class="modal-ov" id="loginMod" onclick="if(event.target.id==='loginMod')closeLg()">
+  <div class="login-modal">
+    <h2>Admin Belépés</h2>
+    <p>Csak admin tölthet fel tartalmat</p>
+    <div class="fg"><label>Felhasználónév</label><input class="fi" type="text" id="lgu" placeholder="admin"/></div>
+    <div class="fg"><label>Jelszó</label><input class="fi" type="password" id="lgp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <p class="ferr" id="lgerr"></p>
+    <button class="btn-p" style="width:100%;margin-top:.5rem;justify-content:center" onclick="doLogin()">Bejelentkezés</button>
+  </div>
+</div>
+
+<!-- Upload panel -->
+<div class="up-panel">
+  <div class="up-wrap" id="upWrap">
+    <div class="up-hdr"><h3>➕ Tartalom hozzáadása</h3><button class="up-close-btn" onclick="toggleUp()">✕</button></div>
+    <div class="up-body">
+      <div class="up-tabs">
+        <div class="up-tab active" onclick="setUType('film',this)">🎬 Film</div>
+        <div class="up-tab" onclick="setUType('sorozat',this)">📺 Sorozat</div>
+      </div>
+      <div class="fg"><label>Cím *</label><input class="fi" type="text" id="uT" placeholder="pl. A nagy utazás"/></div>
+      <div class="fg"><label>Leírás</label><textarea class="fi" id="uD" rows="3" placeholder="Rövid leírás..." style="resize:vertical"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+        <div class="fg"><label>Év</label><input class="fi" type="number" id="uY" placeholder="2024" min="1900" max="2030"/></div>
+        <div class="fg"><label>Értékelés (1-10)</label><input class="fi" type="number" id="uR" placeholder="8.5" min="1" max="10" step=".1"/></div>
+      </div>
+      <div class="fg"><label>Műfaj</label>
+        <select class="fi" id="uG">
+          <option value="akció">Akció</option><option value="dráma">Dráma</option><option value="sci-fi">Sci-Fi</option>
+          <option value="thriller">Thriller</option><option value="vígjáték">Vígjáték</option><option value="horror">Horror</option>
+          <option value="animáció">Animáció</option><option value="romantikus">Romantikus</option><option value="dokumentum">Dokumentum</option>
+        </select>
+      </div>
+      <div class="fg"><label>Borítókép URL (opcionális)</label><input class="fi" type="url" id="uI" placeholder="https://..."/></div>
+      <div class="fg"><label>Emoji ikon</label><div class="ep" id="ep"></div></div>
+      <div class="fg"><label>Badge</label>
+        <select class="fi" id="uB"><option value="">Nincs</option><option value="new">Új</option><option value="hot">Trendi</option></select>
+      </div>
+      <button class="up-submit" onclick="addContent()">✅ Hozzáadás</button>
+      <p class="up-ok" id="upOk"></p>
+    </div>
+  </div>
+  <button class="up-fab" onclick="toggleUp()">＋</button>
+</div>
+
+<script>
+const AU='admin', AP='cinehU2024!';
+const GRADS=['linear-gradient(135deg,#1a0a2e,#0d1b3e)','linear-gradient(135deg,#1a0505,#3d0a0a)','linear-gradient(135deg,#0a1a0a,#0d2e0d)','linear-gradient(135deg,#1a1200,#3d2b00)','linear-gradient(135deg,#0d0d0d,#1a1a2e)','linear-gradient(135deg,#1a0a0a,#2e1a0a)','linear-gradient(135deg,#0a0a1a,#1a0a2e)','linear-gradient(135deg,#0a1a1a,#0d2e2e)'];
+const EMOJIS=['🎬','🎥','🎞️','🎭','🌟','💫','⚡','🔥','❄️','🌊','🏔️','🌌','🚀','⚔️','🗡️','🔮','👁️','🐉','🦁','🤖','👻','🧠','💀','🌹','🎪','🏆','🎵','🌍','🌙','☀️','🎃','🦋'];
+let isAdmin=false, activeFilter='all', uType='film', selEmoji='🎬';
+let items=JSON.parse(localStorage.getItem('ch_items')||'[]');
+let nid=parseInt(localStorage.getItem('ch_nid')||'1');
+
+function save(){localStorage.setItem('ch_items',JSON.stringify(items));localStorage.setItem('ch_nid',String(nid))}
+
+function filtered(list){
+  const q=document.getElementById('srch').value.toLowerCase();
+  return list.filter(i=>{
+    const gm=activeFilter==='all'||i.genre===activeFilter||i.type===activeFilter;
+    const sm=!q||i.title.toLowerCase().includes(q);
+    return gm&&sm;
+  });
+}
+
+function cardHTML(i){
+  const g=i.grad||GRADS[i.id%GRADS.length];
+  const thumb=i.imgUrl
+    ?`<img class="card-img" src="${i.imgUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt=""/><div class="card-ph" style="display:none;--g:${g}"><span>${i.emoji||'🎬'}</span></div>`
+    :`<div class="card-ph" style="--g:${g}"><span>${i.emoji||'🎬'}</span></div>`;
+  const b=i.badge?`<div class="card-badge b-${i.badge}">${i.badge==='new'?'Új':'Trendi'}</div>`:'';
+  return `<div class="card" onclick="openDet(${i.id})"><div style="position:relative">${thumb}${b}<button class="del-btn" onclick="event.stopPropagation();delItem(${i.id})">🗑</button><div class="card-ov"><div class="play-btn">▶</div></div></div><div class="card-info"><div class="card-title">${i.title}</div><div class="card-meta"><span class="c-rat">★ ${i.rating||'?'}</span><span>${i.year||''}</span><span class="c-genre">${i.genre||i.type}</span></div></div></div>`;
+}
+
+function renderSec(gid,cid,sid,list){
+  const f=filtered(list);
+  document.getElementById(gid).innerHTML=f.length?f.map(cardHTML).join(''):`<p class="empty-sec">Nincs tartalom.</p>`;
+  document.getElementById(cid).textContent=f.length+' cím';
+  document.getElementById(sid).style.display='';
+  return f.length;
+}
+
+function renderAll(){
+  const films=items.filter(i=>i.type==='film');
+  const sor=items.filter(i=>i.type==='sorozat');
+  const trend=[...items].sort((a,b)=>(b.rating||0)-(a.rating||0)).slice(0,6);
+  renderHero();
+  const tc=renderSec('g-trend','c-trend','s-trend',trend);
+  document.getElementById('d1').style.display=tc?'':'none';
+  document.getElementById('s-trend').style.display=tc?'':'none';
+  const fc=renderSec('g-film','c-film','s-film',films);
+  document.getElementById('d2').style.display=fc?'':'none';
+  document.getElementById('s-film').style.display=fc?'':'none';
+  const sc=renderSec('g-sor','c-sor','s-sor',sor);
+  document.getElementById('s-sor').style.display=sc?'':'none';
+}
+
+function renderHero(){
+  const hc=document.getElementById('heroC');
+  const hb=document.getElementById('heroBg');
+  if(!items.length){hc.innerHTML='<div class="hero-empty"><h2>Üdvözlünk a CineHun!</h2><p>Adj hozzá tartalmat az admin panelből.</p></div>';hb.innerHTML='<div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a0a2e,#0d1b3e)"></div>';return;}
+  const f=items[items.length-1];
+  const g=f.grad||GRADS[f.id%GRADS.length];
+  hb.innerHTML=f.imgUrl?`<img src="${f.imgUrl}" style="width:100%;height:100%;object-fit:cover;opacity:.35"/><div class="hero-overlay"></div><div class="hero-fade"></div>`:`<div style="position:absolute;inset:0;background:${g}"></div><div class="hero-fade"></div>`;
+  hc.innerHTML=`<div class="hero-content"><div class="badge">⭐ Kiemelt</div><h1 class="hero-title">${f.title}</h1><div class="hero-meta">${f.rating?`<span class="rat">★ ${f.rating}</span>`:''}<span>${f.year||''}</span><span>${f.genre||f.type}</span></div>${f.desc?`<p class="hero-desc">${f.desc}</p>`:''}<div class="hero-btns"><button class="btn-p" onclick="openDet(${f.id})">▶ Részletek</button><button class="btn-s">+ Listámhoz</button></div></div>`;
+}
+
+function openDet(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const g=i.grad||GRADS[i.id%GRADS.length];
+  document.getElementById('dTitle').textContent=i.title;
+  document.getElementById('dBadge').textContent=(i.genre||i.type)+' · '+(i.year||'');
+  document.getElementById('dDesc').textContent=i.desc||'Nincs leírás.';
+  const bg=document.getElementById('dBg');
+  bg.style.background=g;
+  bg.innerHTML=i.imgUrl?`<img src="${i.imgUrl}"/>`:(i.emoji||'🎬');
+  document.getElementById('dTags').innerHTML=[i.year,i.rating?'★ '+i.rating:'',i.genre,i.type==='sorozat'?'📺 Sorozat':'🎬 Film'].filter(Boolean).map(t=>`<span class="m-tag">${t}</span>`).join('');
+  document.getElementById('detMod').classList.add('open');
+}
+function closeDet(){document.getElementById('detMod').classList.remove('open')}
+
+function setFilter(g,el){
+  activeFilter=g;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  if(el)el.classList.add('active');
+  renderAll();
+}
+
+function adminClick(){isAdmin?logout():openLg()}
+function openLg(){document.getElementById('lgu').value='';document.getElementById('lgp').value='';document.getElementById('lgerr').textContent='';document.getElementById('loginMod').classList.add('open');setTimeout(()=>document.getElementById('lgu').focus(),300)}
+function closeLg(){document.getElementById('loginMod').classList.remove('open')}
+function doLogin(){
+  if(document.getElementById('lgu').value.trim()===AU&&document.getElementById('lgp').value===AP){
+    isAdmin=true;document.body.classList.add('admin');
+    document.getElementById('adminBtn').textContent='🟢 Admin';document.getElementById('adminBtn').classList.add('on');
+    closeLg();
+  }else{document.getElementById('lgerr').textContent='❌ Hibás adatok!'}
+}
+function logout(){isAdmin=false;document.body.classList.remove('admin');document.getElementById('adminBtn').textContent='🔐 Admin';document.getElementById('adminBtn').classList.remove('on');document.getElementById('upWrap').classList.remove('open')}
+
+function toggleUp(){document.getElementById('upWrap').classList.toggle('open');document.getElementById('upOk').textContent=''}
+function setUType(t,el){uType=t;document.querySelectorAll('.up-tab').forEach(x=>x.classList.remove('active'));el.classList.add('active')}
+
+function buildEP(){
+  document.getElementById('ep').innerHTML=EMOJIS.map(e=>`<div class="eo${e===selEmoji?' sel':''}" onclick="pickE('${e}',this)">${e}</div>`).join('');
+}
+function pickE(e,el){selEmoji=e;document.querySelectorAll('.eo').forEach(x=>x.classList.remove('sel'));el.classList.add('sel')}
+
+function addContent(){
+  const t=document.getElementById('uT').value.trim();
+  if(!t){alert('A cím megadása kötelező!');return;}
+  items.push({id:nid++,title:t,desc:document.getElementById('uD').value.trim(),year:parseInt(document.getElementById('uY').value)||new Date().getFullYear(),rating:parseFloat(document.getElementById('uR').value)||null,genre:document.getElementById('uG').value,type:uType,badge:document.getElementById('uB').value,emoji:selEmoji,imgUrl:document.getElementById('uI').value.trim(),grad:GRADS[nid%GRADS.length]});
+  save();
+  ['uT','uD','uY','uR','uI'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('uB').value='';
+  document.getElementById('upOk').textContent='✅ Sikeresen hozzáadva!';
+  setTimeout(()=>document.getElementById('upOk').textContent='',3000);
+  renderAll();
+}
+
+function delItem(id){
+  if(!confirm('Biztosan törlöd?'))return;
+  items=items.filter(i=>i.id!==id);save();renderAll();
+}
+
+buildEP();renderAll();
+</script>
+</body>
+</html>
